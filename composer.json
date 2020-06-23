@@ -1,0 +1,31 @@
+{
+    "name": "everton/observer",
+    "description": "Implementação do design pattern observer.",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "phpstan/phpstan": "*",
+        "sebastian/phpcpd": "*",
+        "squizlabs/php_codesniffer": "*",
+        "friendsofphp/php-cs-fixer": "*",
+        "phpmd/phpmd": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Everton da Rosa",
+            "email": "everton3x@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "PTK\\Observer\\": "src"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --coverage-html=reports/coverage --whitelist=src --testdox-html reports/testdox.html --colors=auto --testdox --prepend=vendor/autoload.php tests"
+    }
+}
