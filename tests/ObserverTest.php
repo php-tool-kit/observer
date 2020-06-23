@@ -97,7 +97,11 @@ class ObserverTest extends PHPUnit\Framework\TestCase
     
     public function testMagicGetReturnNull()
     {
-        self::$observer->register('test5', 'testingCallbackFunction');
         $this->assertNull(self::$observer->test5);
+    }
+    
+    public function testConstructor()
+    {
+        $this->assertInstanceOf(\PTK\Observer\Observer::class, new \PTK\Observer\Observer());
     }
 }

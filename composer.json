@@ -26,6 +26,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit --coverage-html=reports/coverage --whitelist=src --testdox-html reports/testdox.html --colors=auto --testdox --prepend=vendor/autoload.php tests"
+        "test": "vendor/bin/phpunit --coverage-html=reports/coverage --whitelist=src --testdox-html reports/testdox.html --colors=auto --testdox --prepend=vendor/autoload.php tests",
+        "commit": "git add --all; git commit"
     }
 }
