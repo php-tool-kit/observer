@@ -94,10 +94,16 @@ class ObserverTest extends PHPUnit\Framework\TestCase
         self::$observer->test4 = 'abcd132131';
         $this->assertEquals('abcd132131', self::$observer->test4);
     }
+    public function testCallbackIsCallable()
+    {
+        self::$observer->register('test5', function($oldvalue, $newvalue){});
+        self::$observer->test5 = 'abcd132131';
+        $this->assertEquals('abcd132131', self::$observer->test5);
+    }
     
     public function testMagicGetReturnNull()
     {
-        $this->assertNull(self::$observer->test5);
+        $this->assertNull(self::$observer->test6);
     }
     
     public function testConstructor()

@@ -119,8 +119,24 @@ class Observer
         if(is_array($callback)){
             $this->runArrayCallback($callback, $oldvalue, $newvalue);
         }
+        
+        if(is_callable($callback)){
+            $this->runCallableCallback($callback, $oldvalue, $newvalue);
+        }
+        
+        //Exception
     }
     
+    protected function runCallableCallback(callable $callback, $oldvalue, $newvalue): void
+    {
+        if(is_array($callback)){
+            $this->runArrayCallback($callback, $oldvalue, $newvalue);
+        }
+        
+        if(is_object($callback)){
+            $callback($oldvalue, $newvalue);
+        }
+    }
     protected function runArrayCallback(array $callback, $oldvalue, $newvalue): void
     {
         if(is_string($callback[1]) === false){
