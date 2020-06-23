@@ -24,6 +24,9 @@
  */
 namespace PTK\Observer;
 
+use PTK\Exceptlion\Type\InvalidTypeException;
+use PTK\Exceptlion\Value\OutOfBoundsException;
+
 /**
  * Implementação do design patter observer.
  *
@@ -37,7 +40,7 @@ class Observer
      * @var array Lista de variáveis observáveis.
      */
     protected array $observable = [];
-    
+
     /**
      *
      * @var array Armazena os valores atuais das observables.
@@ -64,6 +67,7 @@ class Observer
      * do método. Neste caso, será usada execução estática com ::
      *  - object: no primeiro elemento está a instância da classe e no segundo o 
      * nome do método.
+     *  - callable: uma função anônima (lambda) ou arrow function.
      * 
      * 
      * @return void
@@ -77,7 +81,7 @@ class Observer
     public function unregister(string $name): void
     {
         if ($this->hasObservable($name) === false) {
-            //Exception
+            throw new OutOfBoundsException($name, array_keys($this->observable));
         }
 
         unset($this->observable[$name]);
@@ -87,79 +91,81 @@ class Observer
     public function __get(string $name)
     {
         if ($this->hasObservable($name) === false) {
-            //Exception
+            throw new OutOfBoundsException($name, array_keys($this->observable));
         }
-        
-        if(key_exists($name, $this->values) === false){
+
+        if (key_exists($name, $this->values) === false) {
             return null;
         }
-        
+
         return $this->values[$name];
     }
 
     public function __set(string $name, $value)
     {
         if ($this->hasObservable($name) === false) {
-            //Exception
+            throw new OutOfBoundsException($name, array_keys($this->observable));
         }
-        
+
         $oldvalue = $this->values[$name];
         $this->values[$name] = $value;
         $this->runCallbacksFor($name, $oldvalue, $value);
     }
-    
+
     protected function runCallbacksFor(string $name, $oldvalue, $newvalue): void
     {
         $callback = $this->observable[$name];
-        
-        if(is_string($callback)){
+
+        if (is_string($callback)) {
             $this->runStringCallback($callback, $oldvalue, $newvalue);
         }
-        
-        if(is_array($callback)){
+
+        if (is_array($callback)) {
             $this->runArrayCallback($callback, $oldvalue, $newvalue);
         }
-        
-        if(is_callable($callback)){
+
+        if (is_callable($callback)) {
             $this->runCallableCallback($callback, $oldvalue, $newvalue);
         }
-        
-        //Exception
+
+        throw new InvalidTypeException(gettype($callback), 'string|array|callable');
     }
-    
+
     protected function runCallableCallback(callable $callback, $oldvalue, $newvalue): void
     {
-        if(is_array($callback)){
+        if (is_array($callback)) {
             $this->runArrayCallback($callback, $oldvalue, $newvalue);
         }
-        
-        if(is_object($callback)){
+
+        if (is_object($callback)) {
             $callback($oldvalue, $newvalue);
         }
     }
+
     protected function runArrayCallback(array $callback, $oldvalue, $newvalue): void
     {
-        if(is_string($callback[1]) === false){
-            //Exception
+        if (is_string($callback[1]) === false) {
+            throw new InvalidTypeException(gettype($callback), 'string');
         }
-        
+
         $method = $callback[1];
-        
-        if(is_string($callback[0])){
+
+        if (is_string($callback[0])) {
             $class = $callback[0];
-            
+
             $class::$method($oldvalue, $newvalue);
         }
-        
-        if(is_object($callback[0])){
+
+        if (is_object($callback[0])) {
             $instance = $callback[0];
-            
+
             $instance->$method($oldvalue, $newvalue);
         }
-        
+
         //Exception: se o primeiro elemento não é nem um objeto, nem uma string.
+        throw new InvalidTypeException(gettype($callback), 'string|object');
     }
-    
+
     protected function runStringCallback(string $callback, $oldvalue, $newvalue): void
     {
         $callback($oldvalue, $newvalue);

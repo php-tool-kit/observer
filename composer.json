@@ -1,5 +1,5 @@
 {
-    "name": "everton/observer",
+    "name": "php-tool-kit/observer",
     "description": "Implementação do design pattern observer.",
     "type": "library",
     "require-dev": {
@@ -18,7 +18,8 @@
         }
     ],
     "require": {
-        "php": ">=7.4.3"
+        "php": ">=7.4.3",
+        "php-tool-kit/exceptlion": "dev-master"
     },
     "autoload": {
         "psr-4": {

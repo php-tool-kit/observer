@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "992bc74a4d48eb31fcf7b91b3c620f05",
-    "packages": [],
+    "content-hash": "f896082f022eecdc87f1a84669ae0d98",
+    "packages": [
+        {
+            "name": "php-tool-kit/exceptlion",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-tool-kit/exceptlion.git",
+                "reference": "b03244160839b8d58d28d9eb69251c4c66a28b1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-tool-kit/exceptlion/zipball/b03244160839b8d58d28d9eb69251c4c66a28b1f",
+                "reference": "b03244160839b8d58d28d9eb69251c4c66a28b1f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "*",
+                "phpmd/phpmd": "*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": "*",
+                "sebastian/phpcpd": "*",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PTK\\Exceptlion\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Everton da Rosa",
+                    "email": "everton3x@gmail.com"
+                }
+            ],
+            "description": "A library for exceptions.",
+            "time": "2020-06-23T19:23:57+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "composer/semver",
@@ -4250,7 +4295,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "php-tool-kit/exceptlion": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
