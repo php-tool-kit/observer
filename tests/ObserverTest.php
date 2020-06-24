@@ -41,11 +41,9 @@ class ObserverTest extends PHPUnit\Framework\TestCase
     public static function setUpBeforeClass(): void
     {
         self::$observer = new \PTK\Observer\Observer();
-        
+
         require_once 'tests/assets/testingCallbackFunction.php';
         require_once 'tests/assets/testingClassCallback.php';
-        
-        
     }
 
     public function testRegister()
@@ -66,48 +64,93 @@ class ObserverTest extends PHPUnit\Framework\TestCase
         self::$observer->unregister('test');
         $this->assertFalse(self::$observer->hasObservable('test'));
     }
-    
+
     public function testMagicGetAndSet()
     {
         self::$observer->register('test1', 'testingCallbackFunction');
         self::$observer->test1 = 1234;
         $this->assertEquals(1234, self::$observer->test1);
     }
-    
+
     public function testCallbackIsStringFunctionName()
     {
         self::$observer->register('test2', 'testingCallbackFunction');
         self::$observer->test2 = 'abcd';
         $this->assertEquals('abcd', self::$observer->test2);
     }
-    
+
     public function testCallbackIsArrayWithStringClassName()
     {
         self::$observer->register('test3', ['testingClassCallback', 'testStaticCallback']);
         self::$observer->test3 = 'abcd';
         $this->assertEquals('abcd', self::$observer->test3);
     }
-    
+
     public function testCallbackIsArrayWithInstanceClass()
     {
         self::$observer->register('test4', [new testingClassCallback(), 'testInstanceCallback']);
         self::$observer->test4 = 'abcd132131';
         $this->assertEquals('abcd132131', self::$observer->test4);
     }
+
     public function testCallbackIsCallable()
     {
-        self::$observer->register('test5', function($oldvalue, $newvalue){});
+        self::$observer->register('test5', function($oldvalue, $newvalue) {
+            
+        });
         self::$observer->test5 = 'abcd132131';
         $this->assertEquals('abcd132131', self::$observer->test5);
     }
-    
+
     public function testMagicGetReturnNull()
     {
+        self::$observer->register('test6', function($oldvalue, $newvalue) {
+            
+        });
         $this->assertNull(self::$observer->test6);
     }
-    
+
     public function testConstructor()
     {
         $this->assertInstanceOf(\PTK\Observer\Observer::class, new \PTK\Observer\Observer());
+    }
+
+    public function testUnregisterOutOfBoundsException()
+    {
+        $this->expectException(PTK\Exceptlion\Value\OutOfBoundsException::class);
+        self::$observer->unregister('test7');
+    }
+    
+    public function testMagicGetOutOfBoundsException()
+    {
+        $this->expectException(PTK\Exceptlion\Value\OutOfBoundsException::class);
+        self::$observer->test7;
+    }
+    
+    public function testMagicSetOutOfBoundsException()
+    {
+        $this->expectException(PTK\Exceptlion\Value\OutOfBoundsException::class);
+        self::$observer->test7 = 123;
+    }
+    
+    public function testRunCallbackForInvalidTypeException()
+    {
+        $this->expectException(PTK\Exceptlion\Type\InvalidTypeException::class);
+        self::$observer->register('test7', 123131);
+        self::$observer->test7 = 132131;
+    }
+    
+    public function testRunArrayCallbackInvalidTypeException()
+    {
+        $this->expectException(PTK\Exceptlion\Type\InvalidTypeException::class);
+        self::$observer->register('test8', ['ClassName', 1313131]);
+        self::$observer->test8 = 132131;
+    }
+    
+    public function testRunArrayCallbackEndInvalidTypeException()
+    {
+        $this->expectException(PTK\Exceptlion\Type\InvalidTypeException::class);
+        self::$observer->register('test9', [123131, 'methodName']);
+        self::$observer->test9 = 132131;
     }
 }

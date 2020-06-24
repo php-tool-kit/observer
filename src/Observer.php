@@ -94,10 +94,6 @@ class Observer
             throw new OutOfBoundsException($name, array_keys($this->observable));
         }
 
-        if (key_exists($name, $this->values) === false) {
-            return null;
-        }
-
         return $this->values[$name];
     }
 
@@ -118,34 +114,31 @@ class Observer
 
         if (is_string($callback)) {
             $this->runStringCallback($callback, $oldvalue, $newvalue);
+            return;
         }
 
         if (is_array($callback)) {
             $this->runArrayCallback($callback, $oldvalue, $newvalue);
+            return;
         }
 
         if (is_callable($callback)) {
             $this->runCallableCallback($callback, $oldvalue, $newvalue);
+            return;
         }
 
-        throw new InvalidTypeException(gettype($callback), 'string|array|callable');
+        throw new InvalidTypeException(gettype($callback), ['string', 'array', 'callable']);
     }
 
     protected function runCallableCallback(callable $callback, $oldvalue, $newvalue): void
     {
-        if (is_array($callback)) {
-            $this->runArrayCallback($callback, $oldvalue, $newvalue);
-        }
-
-        if (is_object($callback)) {
-            $callback($oldvalue, $newvalue);
-        }
+        $callback($oldvalue, $newvalue);
     }
 
     protected function runArrayCallback(array $callback, $oldvalue, $newvalue): void
     {
         if (is_string($callback[1]) === false) {
-            throw new InvalidTypeException(gettype($callback), 'string');
+            throw new InvalidTypeException(gettype($callback), ['string']);
         }
 
         $method = $callback[1];
@@ -154,16 +147,18 @@ class Observer
             $class = $callback[0];
 
             $class::$method($oldvalue, $newvalue);
+            return;
         }
 
         if (is_object($callback[0])) {
             $instance = $callback[0];
 
             $instance->$method($oldvalue, $newvalue);
+            return;
         }
 
         //Exception: se o primeiro elemento não é nem um objeto, nem uma string.
-        throw new InvalidTypeException(gettype($callback), 'string|object');
+        throw new InvalidTypeException(gettype($callback), ['string', 'object']);
     }
 
     protected function runStringCallback(string $callback, $oldvalue, $newvalue): void
